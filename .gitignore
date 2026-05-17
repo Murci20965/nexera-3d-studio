@@ -39,6 +39,9 @@ yarn-debug.log*
 .playwright-mcp/
 .mcp.json
 
+# Claude Code — personal overrides only; team settings live in .claude/settings.json
+.claude/settings.local.json
+
 # Generated 3D outputs (kept out of git)
 models/
 *.glb
