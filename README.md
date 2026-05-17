@@ -63,8 +63,8 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for request flow and module-level layou
 
 ```powershell
 # 1. Configure secrets
-copy .env.example .env
-# Edit .env and set TRIPO_API_KEY
+copy backend\.env.example backend\.env
+# Edit backend\.env and set TRIPO_API_KEY
 
 # 2. Backend (terminal 1)
 cd backend
@@ -96,8 +96,8 @@ docker compose up --build
 
 | Name | Location | Purpose |
 |------|----------|---------|
-| `TRIPO_API_KEY` | `.env` | Tripo3D bearer token (**required**) |
-| `TRIPO_MODEL_VERSION` | `.env` | Pin model version, default `v3.1-20260211` |
+| `TRIPO_API_KEY` | `backend/.env` | Tripo3D bearer token (**required**) |
+| `TRIPO_MODEL_VERSION` | `backend/.env` | Pin model version, default `v3.1-20260211` |
 | `NEXT_PUBLIC_API_URL` | `frontend/.env.local` | Backend URL the frontend hits, default `http://localhost:8000` |
 
 ## API reference

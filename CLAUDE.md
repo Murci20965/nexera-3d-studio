@@ -58,7 +58,7 @@ cd frontend; npx next build
 
 ## When changing code
 
-- New env vars → add to `backend/app/config/settings.py` **and** `.env.example`.
+- New env vars → add to `backend/app/config/settings.py` **and** `backend/.env.example`.
 - New endpoints → add to README's API table and ARCHITECTURE.md if structural.
 - Editing `backend/app/config/settings.py` → restart the backend even with `--reload` (env loads once at import time).
 - Touching the viewer → take a fresh screenshot before claiming the change works; visual regressions don't show up in builds.

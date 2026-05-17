@@ -5,7 +5,7 @@
 See [README.md](./README.md#local-development) for first-time setup. Quick version:
 
 ```powershell
-copy .env.example .env          # add TRIPO_API_KEY
+copy backend\.env.example backend\.env   # add TRIPO_API_KEY
 cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --reload
