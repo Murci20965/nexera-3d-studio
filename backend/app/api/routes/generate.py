@@ -9,6 +9,8 @@ from app.services.tripo import create_text_task, upload_image, create_image_task
 
 router = APIRouter(prefix="/api", tags=["generate"])
 
+MAX_UPLOAD_BYTES = 20 * 1024 * 1024  # 20 MB
+
 
 @router.post("/generate/text", response_model=TaskIdResponse)
 async def generate_from_text(body: TextGenerateRequest):
@@ -32,6 +34,8 @@ async def generate_from_image(
     file_bytes = await file.read()
     if not file_bytes:
         raise HTTPException(status_code=422, detail="Uploaded file is empty")
+    if len(file_bytes) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="File exceeds 20 MB limit")
 
     content_type = file.content_type or "image/png"
     ext = (mimetypes.guess_extension(content_type) or ".png").lstrip(".")
