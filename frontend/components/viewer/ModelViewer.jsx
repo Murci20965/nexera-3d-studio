@@ -12,6 +12,7 @@ export default function ModelViewer({ src }) {
     const container = mountRef.current;
     if (!container) return;
 
+    let cancelled = false;
     let animId;
 
     const init = async () => {
@@ -22,6 +23,10 @@ export default function ModelViewer({ src }) {
         import("three"),
         import("three/examples/jsm/controls/OrbitControls.js"),
       ]);
+
+      // React 18 StrictMode runs cleanup before this resolves — bail out so
+      // we don't create a second renderer that fights the real one for the GPU.
+      if (cancelled) return;
 
       const w = container.clientWidth || 800;
       const h = container.clientHeight || 600;
@@ -131,6 +136,7 @@ export default function ModelViewer({ src }) {
     init().catch(console.error);
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(animId);
       const s = stateRef.current;
       if (!s) return;
