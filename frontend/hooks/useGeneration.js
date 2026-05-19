@@ -63,13 +63,14 @@ export function useGeneration({ onModelReady, onError }) {
     }
   };
 
-  const startImage = async (file, prompt) => {
+  const startImage = async (file, prompt, quality = "standard") => {
     clearInterval(pollRef.current);
     setIsLoading(true); setProgress(0); setStatusMsg("Uploading image…"); onError("");
     try {
       const formData = new FormData();
       formData.append("file", file);
       if (prompt.trim()) formData.append("prompt", prompt.trim());
+      if (quality === "detailed") formData.append("quality", "detailed");
       const { task_id } = await startImageGeneration(formData);
       setStatusMsg("Generating…"); setProgress(0);
       const modelUrl = await poll(task_id, "Generating");

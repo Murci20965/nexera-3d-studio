@@ -57,7 +57,10 @@ def test_generate_image_oversized(client):
 def test_generate_image_success(client):
     with (
         patch("app.api.routes.generate.upload_image", new=AsyncMock(return_value="img-token")),
-        patch("app.api.routes.generate.create_image_task", new=AsyncMock(return_value="task-456")),
+        patch(
+            "app.api.routes.generate.create_image_task",
+            new=AsyncMock(return_value="task-456"),
+        ) as create_mock,
     ):
         response = client.post(
             "/api/generate/image",
@@ -65,6 +68,24 @@ def test_generate_image_success(client):
         )
     assert response.status_code == 200
     assert response.json() == {"task_id": "task-456"}
+    assert create_mock.await_args.kwargs["geometry_quality"] == "standard"
+
+
+def test_generate_image_detailed_quality(client):
+    with (
+        patch("app.api.routes.generate.upload_image", new=AsyncMock(return_value="img-token")),
+        patch(
+            "app.api.routes.generate.create_image_task",
+            new=AsyncMock(return_value="task-detailed"),
+        ) as create_mock,
+    ):
+        response = client.post(
+            "/api/generate/image",
+            files={"file": ("photo.jpg", b"fakeimagedata", "image/jpeg")},
+            data={"quality": "detailed"},
+        )
+    assert response.status_code == 200
+    assert create_mock.await_args.kwargs["geometry_quality"] == "detailed"
 
 
 # ── Multiview generation ─────────────────────────────────────────────────────

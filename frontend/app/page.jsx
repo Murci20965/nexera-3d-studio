@@ -59,12 +59,12 @@ export default function HomePage() {
           {errorMsg && (
             <div className="status-error" role="alert">{errorMsg}</div>
           )}
+        </div>
 
-          {/* Branding — Nudle (smaller) above Nexera (larger), pinned to panel bottom */}
-          <div className="panel-logos">
-            <img src={nudleLogo.src} alt="Nudle" className="logo-nudle" />
-            <img src={nexeraLogo.src} alt="Nexera" className="logo-nexera" />
-          </div>
+        {/* Pinned panel footer — stays visible regardless of form length */}
+        <div className="panel-logos">
+          <img src={nudleLogo.src} alt="Nudle" className="logo-nudle" />
+          <img src={nexeraLogo.src} alt="Nexera" className="logo-nexera" />
         </div>
       </aside>
 

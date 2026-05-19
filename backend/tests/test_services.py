@@ -70,6 +70,22 @@ async def test_create_image_task_success():
     assert task_id == "img-task-99"
 
 
+async def test_create_image_task_detailed_quality_in_payload():
+    captured = {}
+
+    def _record(request):
+        import json
+        captured["body"] = json.loads(request.content)
+        return httpx.Response(200, json={"data": {"task_id": "img-detailed"}})
+
+    with respx.mock:
+        respx.post("https://api.tripo3d.ai/v2/openapi/task").mock(side_effect=_record)
+        from app.services.tripo import create_image_task
+        await create_image_task("tok-xyz", file_type="png", geometry_quality="detailed")
+
+    assert captured["body"]["geometry_quality"] == "detailed"
+
+
 # ── create_multiview_task ─────────────────────────────────────────────────────
 
 def _mv_payload(count: int):

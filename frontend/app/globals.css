@@ -191,8 +191,7 @@ body {
   -webkit-backdrop-filter: saturate(200%) blur(32px);
   border-right: 0.5px solid var(--panel-border);
   padding: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;                 /* clip both axes — the inner content scrolls */
   display: flex;
   flex-direction: column;
   z-index: 40;
@@ -200,15 +199,6 @@ body {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               background var(--transition),
               border-color var(--transition);
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) transparent;
-}
-
-.floating-panel::-webkit-scrollbar { width: 3px; }
-.floating-panel::-webkit-scrollbar-track { background: transparent; }
-.floating-panel::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 2px;
 }
 
 .floating-panel.open {
@@ -253,13 +243,25 @@ body {
   text-transform: uppercase;
 }
 
-/* ── Panel content area ────────────────────────────────────── */
+/* ── Panel content area (scrolls within the panel) ─────────── */
 .panel-content {
-  padding: 28px 22px 28px;
+  padding: 28px 22px 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   flex: 1;
+  min-height: 0;            /* allow shrink below content height in flex column */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.panel-content::-webkit-scrollbar { width: 3px; }
+.panel-content::-webkit-scrollbar-track { background: transparent; }
+.panel-content::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 2px;
 }
 
 /* ── Floating viewport header ──────────────────────────────── */
@@ -757,14 +759,16 @@ body {
   font-weight: 500;
 }
 
-/* ── Panel branding logos (just below Generate button) ─────── */
+/* ── Panel branding logos (pinned footer, never scrolls away) ─ */
 .panel-logos {
-  margin-top: 20px;
+  flex-shrink: 0;
+  padding: 12px 22px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
   opacity: 0.85;
+  border-top: 0.5px solid var(--panel-border);
 }
 
 .panel-logos img {

@@ -84,6 +84,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [imagePrompt, setImagePrompt] = useState("");
+  const [imageQuality, setImageQuality] = useState("standard");
   const [isDragOver, setIsDragOver] = useState(false);
 
   // Multiview-tab state
@@ -107,7 +108,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
   const handleImageSubmit = (e) => {
     e.preventDefault();
     if (!imageFile || isLoading) return;
-    startImage(imageFile, imagePrompt);
+    startImage(imageFile, imagePrompt, imageQuality);
   };
 
   const handleMvSubmit = (e) => {
@@ -291,6 +292,25 @@ export default function GeneratorForm({ onModelReady, onError }) {
             <p className="image-prompt-note">
               The uploaded image sets the base color and texture. Prompts influence shape and style but cannot override the image&rsquo;s colors. For full color control, use Text to 3D.
             </p>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Quality</label>
+            <div className="tabs" style={{ padding: "3px" }}>
+              <button type="button"
+                className={`tab-btn${imageQuality === "standard" ? " active" : ""}`}
+                onClick={() => setImageQuality("standard")} disabled={isLoading}
+              >Standard</button>
+              <button type="button"
+                className={`tab-btn${imageQuality === "detailed" ? " active" : ""}`}
+                onClick={() => setImageQuality("detailed")} disabled={isLoading}
+              >Detailed</button>
+            </div>
+            {imageQuality === "detailed" && (
+              <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "6px" }}>
+                Denser mesh — roughly 2× generation time and 1.5× credits.
+              </p>
+            )}
           </div>
 
           <button type="submit" className="btn btn-primary"

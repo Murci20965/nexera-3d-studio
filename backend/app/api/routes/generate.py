@@ -36,6 +36,7 @@ async def generate_from_text(body: TextGenerateRequest):
 async def generate_from_image(
     file: UploadFile = File(...),
     prompt: str = Form(default=""),
+    quality: str = Form(default="standard"),
 ):
     file_bytes = await file.read()
     if not file_bytes:
@@ -58,6 +59,7 @@ async def generate_from_image(
         image_token=image_token,
         file_type=ext,
         prompt=prompt.strip(),
+        geometry_quality=quality if quality in ("standard", "detailed") else "standard",
     )
     return TaskIdResponse(task_id=task_id)
 

@@ -60,7 +60,12 @@ async def upload_image(file_bytes: bytes, filename: str, content_type: str) -> s
     return response.json()["data"]["image_token"]
 
 
-async def create_image_task(image_token: str, file_type: str = "png", prompt: str = "") -> str:
+async def create_image_task(
+    image_token: str,
+    file_type: str = "png",
+    prompt: str = "",
+    geometry_quality: str = "standard",
+) -> str:
     payload: dict = {
         "type": "image_to_model",
         "model_version": TRIPO_MODEL_VERSION,
@@ -73,6 +78,8 @@ async def create_image_task(image_token: str, file_type: str = "png", prompt: st
     }
     if prompt:
         payload["prompt"] = prompt
+    if geometry_quality == "detailed":
+        payload["geometry_quality"] = "detailed"
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(

@@ -188,6 +188,24 @@ describe("useGeneration", () => {
     const [formData] = api.startImageGeneration.mock.calls[0];
     expect(formData.get("file")).toBe(fakeFile);
     expect(formData.get("prompt")).toBe("make it shiny");
+    // Default quality is "standard" — should NOT be in the FormData
+    expect(formData.get("quality")).toBeNull();
     expect(onModelReady).toHaveBeenCalled();
+  });
+
+  it("startImage forwards quality=detailed when requested", async () => {
+    api.startImageGeneration.mockResolvedValueOnce({ task_id: "img-d" });
+    api.pollTask.mockResolvedValueOnce({
+      status: "success", progress: 100, model_url: "https://cdn.example.com/d.glb",
+    });
+    const { result } = renderHook(() => useGeneration({ onModelReady, onError }));
+    const f = new File([new Uint8Array(2)], "p.png", { type: "image/png" });
+
+    act(() => { result.current.startImage(f, "", "detailed"); });
+    await act(async () => {});
+    await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+
+    const [formData] = api.startImageGeneration.mock.calls[0];
+    expect(formData.get("quality")).toBe("detailed");
   });
 });
