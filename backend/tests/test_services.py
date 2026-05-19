@@ -70,6 +70,40 @@ async def test_create_image_task_success():
     assert task_id == "img-task-99"
 
 
+# ── create_multiview_task ─────────────────────────────────────────────────────
+
+def _mv_payload(count: int):
+    return [{"file_token": f"tok-{i}", "type": "png"} for i in range(count)]
+
+
+async def test_create_multiview_task_success():
+    captured = {}
+
+    def _record(request):
+        import json
+        captured["body"] = json.loads(request.content)
+        return httpx.Response(200, json={"data": {"task_id": "mv-task-1"}})
+
+    with respx.mock:
+        respx.post("https://api.tripo3d.ai/v2/openapi/task").mock(side_effect=_record)
+        from app.services.tripo import create_multiview_task
+        task_id = await create_multiview_task(_mv_payload(4), prompt="a chair")
+
+    assert task_id == "mv-task-1"
+    body = captured["body"]
+    assert body["type"] == "multiview_to_model"
+    assert body["prompt"] == "a chair"
+    assert [f["file_token"] for f in body["files"]] == ["tok-0", "tok-1", "tok-2", "tok-3"]
+
+
+async def test_create_multiview_task_wrong_count():
+    from app.services.tripo import create_multiview_task
+    for n in (0, 1, 3, 5):
+        with pytest.raises(HTTPException) as exc_info:
+            await create_multiview_task(_mv_payload(n))
+        assert exc_info.value.status_code == 422
+
+
 # ── get_task_status ───────────────────────────────────────────────────────────
 
 async def test_get_task_status_success():

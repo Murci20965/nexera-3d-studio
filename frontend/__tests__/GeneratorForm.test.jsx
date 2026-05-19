@@ -2,9 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import GeneratorForm from "../components/generator/GeneratorForm";
 
-const { mockStartText, mockStartImage } = vi.hoisted(() => ({
+const { mockStartText, mockStartImage, mockStartMultiview } = vi.hoisted(() => ({
   mockStartText: vi.fn(),
   mockStartImage: vi.fn(),
+  mockStartMultiview: vi.fn(),
 }));
 
 vi.mock("../hooks/useGeneration", () => ({
@@ -14,6 +15,7 @@ vi.mock("../hooks/useGeneration", () => ({
     statusMsg: "",
     startText: mockStartText,
     startImage: mockStartImage,
+    startMultiview: mockStartMultiview,
   }),
 }));
 
@@ -68,6 +70,16 @@ describe("GeneratorForm", () => {
     });
     fireEvent.submit(screen.getByPlaceholderText(/Describe the 3D model/).closest("form"));
     expect(mockStartText).not.toHaveBeenCalled();
+  });
+
+  it("multiview tab renders 4 dropzones and submit is disabled until all are filled", () => {
+    render(<GeneratorForm onModelReady={onModelReady} onError={onError} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Multiview" }));
+    expect(screen.getByLabelText("Upload Front image")).toBeTruthy();
+    expect(screen.getByLabelText("Upload Back image")).toBeTruthy();
+    expect(screen.getByLabelText("Upload Left image")).toBeTruthy();
+    expect(screen.getByLabelText("Upload Right image")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Generate 3D Model" })).toBeDisabled();
   });
 
   it("quality toggle switches between balanced and high-detail", () => {

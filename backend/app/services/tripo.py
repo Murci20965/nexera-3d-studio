@@ -84,6 +84,44 @@ async def create_image_task(image_token: str, file_type: str = "png", prompt: st
     return response.json()["data"]["task_id"]
 
 
+async def create_multiview_task(
+    files: list[dict],
+    prompt: str = "",
+) -> str:
+    """Create a multiview_to_model task.
+
+    `files` is an ordered list of exactly 4 dicts, one per view in
+    [front, back, left, right] order. Each dict must contain
+    `file_token` (str) and `type` (str, e.g. 'png'/'jpg').
+    """
+    if len(files) != 4:
+        raise HTTPException(
+            status_code=422,
+            detail="multiview requires exactly 4 images (front, back, left, right)",
+        )
+
+    payload: dict = {
+        "type": "multiview_to_model",
+        "model_version": TRIPO_MODEL_VERSION,
+        "texture": True,
+        "pbr": True,
+        "files": [
+            {"type": f["type"], "file_token": f["file_token"]} for f in files
+        ],
+    }
+    if prompt:
+        payload["prompt"] = prompt
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        response = await client.post(
+            f"{TRIPO_BASE_URL}/task",
+            json=payload,
+            headers=_get_headers(),
+        )
+    _raise_for_tripo_error(response, "multiview_to_model task creation")
+    return response.json()["data"]["task_id"]
+
+
 async def get_task_status(task_id: str) -> dict:
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.get(

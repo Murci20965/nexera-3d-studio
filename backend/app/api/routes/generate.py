@@ -5,7 +5,13 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from fastapi.responses import StreamingResponse
 
 from app.schemas.generate import TextGenerateRequest, TaskIdResponse, TaskStatusResponse
-from app.services.tripo import create_text_task, upload_image, create_image_task, get_task_status
+from app.services.tripo import (
+    create_text_task,
+    upload_image,
+    create_image_task,
+    create_multiview_task,
+    get_task_status,
+)
 
 router = APIRouter(prefix="/api", tags=["generate"])
 
@@ -53,6 +59,48 @@ async def generate_from_image(
         file_type=ext,
         prompt=prompt.strip(),
     )
+    return TaskIdResponse(task_id=task_id)
+
+
+@router.post("/generate/multiview", response_model=TaskIdResponse)
+async def generate_from_multiview(
+    front: UploadFile = File(...),
+    back: UploadFile = File(...),
+    left: UploadFile = File(...),
+    right: UploadFile = File(...),
+    prompt: str = Form(default=""),
+):
+    """Multiview generation: requires exactly 4 images in front/back/left/right order."""
+    uploads = [("front", front), ("back", back), ("left", left), ("right", right)]
+
+    # Validate every view first so a bad input never costs a Tripo upload.
+    validated: list[tuple[str, UploadFile, bytes]] = []
+    for view_name, upload in uploads:
+        data = await upload.read()
+        if not data:
+            raise HTTPException(status_code=422, detail=f"{view_name} image is empty")
+        if len(data) > MAX_UPLOAD_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail=f"{view_name} image exceeds 20 MB limit",
+            )
+        validated.append((view_name, upload, data))
+
+    tokens: list[dict] = []
+    for view_name, upload, data in validated:
+        content_type = upload.content_type or "image/png"
+        ext = (mimetypes.guess_extension(content_type) or ".png").lstrip(".")
+        if ext in ("jpe", "jpeg"):
+            ext = "jpg"
+        filename = upload.filename or f"{view_name}.{ext}"
+        token = await upload_image(
+            file_bytes=data,
+            filename=filename,
+            content_type=content_type,
+        )
+        tokens.append({"file_token": token, "type": ext})
+
+    task_id = await create_multiview_task(files=tokens, prompt=prompt.strip())
     return TaskIdResponse(task_id=task_id)
 
 

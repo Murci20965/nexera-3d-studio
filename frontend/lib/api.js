@@ -25,6 +25,18 @@ export async function startImageGeneration(formData) {
   return res.json(); // { task_id }
 }
 
+export async function startMultiviewGeneration(formData) {
+  const res = await fetch(`${API_BASE}/api/generate/multiview`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || `Server error: ${res.status}`);
+  }
+  return res.json();
+}
+
 export async function pollTask(taskId) {
   const res = await fetch(`${API_BASE}/api/task/${taskId}`);
   if (!res.ok) throw new Error(`Status check failed: ${res.status}`);

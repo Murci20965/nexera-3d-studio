@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import GeneratorForm from "../components/generator/GeneratorForm";
 import ModelViewer from "../components/viewer/ModelViewer";
+import nudleLogo from "../assets/nudle_logo.png";
+import nexeraLogo from "../assets/Nexera_logo.png";
 
 export default function HomePage() {
   const [modelUrl, setModelUrl] = useState(null);
@@ -57,6 +59,12 @@ export default function HomePage() {
           {errorMsg && (
             <div className="status-error" role="alert">{errorMsg}</div>
           )}
+
+          {/* Branding — Nudle (smaller) above Nexera (larger), pinned to panel bottom */}
+          <div className="panel-logos">
+            <img src={nudleLogo.src} alt="Nudle" className="logo-nudle" />
+            <img src={nexeraLogo.src} alt="Nexera" className="logo-nexera" />
+          </div>
         </div>
       </aside>
 

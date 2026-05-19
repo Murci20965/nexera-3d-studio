@@ -67,6 +67,73 @@ def test_generate_image_success(client):
     assert response.json() == {"task_id": "task-456"}
 
 
+# ── Multiview generation ─────────────────────────────────────────────────────
+
+
+def _mv_files(front=b"f", back=b"b", left=b"l", right=b"r"):
+    return {
+        "front": ("front.png", front, "image/png"),
+        "back":  ("back.png",  back,  "image/png"),
+        "left":  ("left.png",  left,  "image/png"),
+        "right": ("right.png", right, "image/png"),
+    }
+
+
+def test_generate_multiview_missing_view(client):
+    # Drop one required view
+    files = _mv_files()
+    files.pop("back")
+    response = client.post("/api/generate/multiview", files=files)
+    assert response.status_code == 422
+
+
+def test_generate_multiview_empty_view(client):
+    response = client.post(
+        "/api/generate/multiview",
+        files=_mv_files(back=b""),
+    )
+    assert response.status_code == 422
+    assert "back" in response.json()["detail"]
+
+
+def test_generate_multiview_oversized_view(client):
+    oversized = b"x" * (20 * 1024 * 1024 + 1)
+    response = client.post(
+        "/api/generate/multiview",
+        files=_mv_files(left=oversized),
+    )
+    assert response.status_code == 413
+    assert "left" in response.json()["detail"]
+
+
+def test_generate_multiview_success(client):
+    with (
+        patch(
+            "app.api.routes.generate.upload_image",
+            new=AsyncMock(side_effect=["t-front", "t-back", "t-left", "t-right"]),
+        ),
+        patch(
+            "app.api.routes.generate.create_multiview_task",
+            new=AsyncMock(return_value="task-mv"),
+        ) as create_mock,
+    ):
+        response = client.post(
+            "/api/generate/multiview",
+            files=_mv_files(),
+            data={"prompt": "a wooden chair"},
+        )
+
+    assert response.status_code == 200
+    assert response.json() == {"task_id": "task-mv"}
+
+    # Verify the service was called with tokens in the correct fixed order
+    create_mock.assert_awaited_once()
+    kwargs = create_mock.await_args.kwargs
+    tokens = [f["file_token"] for f in kwargs["files"]]
+    assert tokens == ["t-front", "t-back", "t-left", "t-right"]
+    assert kwargs["prompt"] == "a wooden chair"
+
+
 # ── Task polling ─────────────────────────────────────────────────────────────
 
 def test_poll_task_success(client):

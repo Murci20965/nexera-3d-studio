@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { startTextGeneration, startImageGeneration, pollTask, API_BASE } from "../lib/api";
+import {
+  startTextGeneration,
+  startImageGeneration,
+  startMultiviewGeneration,
+  pollTask,
+  API_BASE,
+} from "../lib/api";
 
 const POLL_INTERVAL_MS = 3000;
 
@@ -74,5 +80,26 @@ export function useGeneration({ onModelReady, onError }) {
     }
   };
 
-  return { isLoading, progress, statusMsg, startText, startImage };
+  const startMultiview = async (files, prompt) => {
+    // `files` is { front, back, left, right } — all four required
+    clearInterval(pollRef.current);
+    setIsLoading(true); setProgress(0); setStatusMsg("Uploading images…"); onError("");
+    try {
+      const formData = new FormData();
+      formData.append("front", files.front);
+      formData.append("back",  files.back);
+      formData.append("left",  files.left);
+      formData.append("right", files.right);
+      if (prompt && prompt.trim()) formData.append("prompt", prompt.trim());
+      const { task_id } = await startMultiviewGeneration(formData);
+      setStatusMsg("Generating…"); setProgress(0);
+      const modelUrl = await poll(task_id, "Generating");
+      finish(modelUrl);
+    } catch (err) {
+      setIsLoading(false); setProgress(0); setStatusMsg("");
+      onError(err.message || "Failed to start generation.");
+    }
+  };
+
+  return { isLoading, progress, statusMsg, startText, startImage, startMultiview };
 }
