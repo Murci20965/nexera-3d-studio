@@ -318,7 +318,10 @@ export default function GeneratorForm({ onModelReady, onError }) {
               ))}
             </div>
             <p className="image-prompt-note">
-              Use the same object in all 4 views with similar scale and centring. Clean or transparent backgrounds give the sharpest results.
+              All 4 views must be <strong>direct head-on shots</strong> of the same object — <em>not</em> 3/4-angle marketing photos.
+              Front and Back show only the front/rear face; Left and Right are pure side profiles.
+              Same scale, same lighting, clean backgrounds.
+              Reflective subjects (cars, glass, chrome) often produce warped meshes — the single-image <strong>Image to 3D</strong> tab usually works better for those.
             </p>
           </div>
 
