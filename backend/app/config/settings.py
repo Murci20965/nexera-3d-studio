@@ -7,3 +7,7 @@ load_dotenv("../.env")
 
 TRIPO_API_KEY: str = os.getenv("TRIPO_API_KEY", "")
 TRIPO_MODEL_VERSION: str = os.getenv("TRIPO_MODEL_VERSION", "v3.1-20260211")
+# Comma-separated list of allowed CORS origins; "*" is fine for local dev only.
+ALLOWED_ORIGINS: list[str] = [
+    o.strip() for o in os.getenv("ALLOWED_ORIGINS", "*").split(",") if o.strip()
+]

@@ -19,11 +19,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # Must be the public URL the browser can reach — set NEXT_PUBLIC_API_URL in
+        # your shell or a .env file before running `docker compose up --build`.
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
     container_name: nexera-frontend
     ports:
       - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
     depends_on:
       backend:
         condition: service_healthy
