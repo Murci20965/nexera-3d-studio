@@ -338,9 +338,6 @@ export default function GeneratorForm({ onModelReady, onError }) {
                 />
               ))}
             </div>
-            <p className="image-prompt-note">
-              Each view must be a <strong>direct head-on shot</strong>, not a 3/4 angle. Reflective subjects (cars, glass) often warp; try Image to 3D for those.
-            </p>
           </div>
 
           <div className="form-group">
@@ -354,6 +351,9 @@ export default function GeneratorForm({ onModelReady, onError }) {
               value={mvPrompt} onChange={(e) => setMvPrompt(e.target.value)}
               disabled={isLoading} style={{ minHeight: "72px" }}
             />
+            <p className="image-prompt-note">
+              Each view must be a <strong>direct head-on shot</strong>, not a 3/4 angle. Reflective subjects (cars, glass) often warp; try Image to 3D for those.
+            </p>
           </div>
 
           <div className="form-group">
