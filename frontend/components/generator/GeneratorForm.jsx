@@ -42,8 +42,17 @@ export default function GeneratorForm({ onModelReady, onError }) {
 
   const acceptFile = (file) => {
     if (!file || !file.type.startsWith("image/")) return;
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
     setImageFile(file);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleRemoveImage = (e) => {
+    e.stopPropagation();
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -136,6 +145,17 @@ export default function GeneratorForm({ onModelReady, onError }) {
             >
               {imagePreview ? (
                 <>
+                  <button
+                    type="button"
+                    className="drop-zone-remove"
+                    onClick={handleRemoveImage}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    disabled={isLoading}
+                    aria-label="Remove image"
+                    title="Remove image"
+                  >
+                    ×
+                  </button>
                   <img src={imagePreview} alt="Preview" className="drop-zone-preview" />
                   <span className="drop-zone-filename">{imageFile?.name}</span>
                 </>
