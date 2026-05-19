@@ -2,7 +2,25 @@
 
 import { useEffect, useRef, useState } from "react";
 
-export default function ModelViewer({ src }) {
+// Scene colors for each theme
+const SCENE_COLORS = {
+  dark:  { bg: 0x09090e, gridPrimary: 0x4433cc, gridSecondary: 0x1a1740 },
+  light: { bg: 0xf0f0f5, gridPrimary: 0x8880dd, gridSecondary: 0xd0ceee },
+};
+
+function applySceneTheme(scene, grid, theme) {
+  const c = SCENE_COLORS[theme] ?? SCENE_COLORS.dark;
+  scene.background.set(c.bg);
+  scene.fog.color.set(c.bg);
+  if (grid) {
+    // GridHelper exposes two LineBasicMaterials: [primary, secondary]
+    const mats = Array.isArray(grid.material) ? grid.material : [grid.material];
+    if (mats[0]) mats[0].color.set(c.gridPrimary);
+    if (mats[1]) mats[1].color.set(c.gridSecondary);
+  }
+}
+
+export default function ModelViewer({ src, theme = "dark" }) {
   const mountRef = useRef(null);
   const stateRef = useRef(null);
   const [ready, setReady] = useState(false);
@@ -95,7 +113,7 @@ export default function ModelViewer({ src }) {
       controls.enableDamping = true;
       controls.dampingFactor = 0.07;
       controls.minPolarAngle = Math.PI / 10;
-      controls.maxPolarAngle = Math.PI / 2.05;
+      controls.maxPolarAngle = Math.PI - Math.PI / 10;
       controls.minDistance = 1.5;
       controls.maxDistance = 18;
       controls.target.set(0, 1, 0);
@@ -106,7 +124,11 @@ export default function ModelViewer({ src }) {
       controls.addEventListener("start", () => { userInteracting = true; });
       controls.addEventListener("end", () => { userInteracting = false; });
 
-      stateRef.current = { THREE, scene, camera, renderer, controls };
+      stateRef.current = { THREE, scene, camera, renderer, controls, grid };
+
+      // Apply current theme immediately so colors are right on the first frame
+      applySceneTheme(scene, grid, document.documentElement.dataset.theme || "dark");
+
       setReady(true);
 
       // Render loop — rotate only the model, grid stays fixed
@@ -116,6 +138,9 @@ export default function ModelViewer({ src }) {
           const model = scene.getObjectByName("__model__");
           if (model) model.rotation.y += 0.005;
         }
+        // Hide the grid when the camera dips below the floor so it doesn't
+        // slice through the model from underneath.
+        grid.visible = camera.position.y >= 0;
         controls.update();
         renderer.render(scene, camera);
       };
@@ -149,6 +174,13 @@ export default function ModelViewer({ src }) {
       setReady(false);
     };
   }, []);
+
+  // ── Update scene colors when theme changes ──────────────────
+  useEffect(() => {
+    const s = stateRef.current;
+    if (!s || !ready) return;
+    applySceneTheme(s.scene, s.grid, theme);
+  }, [theme, ready]);
 
   // ── Load / swap model ───────────────────────────────────────
   useEffect(() => {
@@ -205,7 +237,7 @@ export default function ModelViewer({ src }) {
           model.scale.setScalar(sc);
           model.position.set(
             -center.x * sc,
-            -box.min.y * sc, // feet on grid floor
+            -box.min.y * sc,
             -center.z * sc
           );
 

@@ -8,24 +8,100 @@
 }
 
 :root {
-  --bg-base: #000000;
-  --bg-surface: #1c1c1e;
-  --bg-elevated: #2c2c2e;
-  --bg-fill: rgba(118, 118, 128, 0.12);
-  --separator: rgba(84, 84, 88, 0.5);
-  --border: rgba(255, 255, 255, 0.08);
-  --accent: #7b74ff;
-  --accent-hover: #9590ff;
-  --accent-dim: rgba(123, 116, 255, 0.16);
-  --text-primary: rgba(255, 255, 255, 0.95);
+  /* ── Semantic colour tokens ─────────────── */
+  --bg-base:        #000000;
+  --bg-surface:     #1c1c1e;
+  --bg-elevated:    #2c2c2e;
+  --bg-fill:        rgba(118, 118, 128, 0.12);
+  --separator:      rgba(84, 84, 88, 0.5);
+  --border:         rgba(255, 255, 255, 0.08);
+  --accent:         #7b74ff;
+  --accent-hover:   #9590ff;
+  --accent-dim:     rgba(123, 116, 255, 0.16);
+  --text-primary:   rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(235, 235, 245, 0.55);
-  --text-muted: rgba(235, 235, 245, 0.25);
-  --danger: #ff453a;
-  --success: #32d74b;
-  --radius: 10px;
-  --radius-lg: 14px;
+  --text-muted:     rgba(235, 235, 245, 0.25);
+  --text-tertiary:  rgba(235, 235, 245, 0.22);
+  --danger:         #ff453a;
+  --success:        #32d74b;
+
+  /* ── Structural tokens (replaces hardcoded rgba) ────────── */
+  --panel-bg:               rgba(10, 10, 14, 0.82);
+  --panel-border:           rgba(255, 255, 255, 0.07);
+  --toggle-bg:              rgba(14, 14, 18, 0.88);
+  --toggle-bg-hover:        rgba(30, 30, 38, 0.95);
+  --toggle-border-hover:    rgba(255, 255, 255, 0.18);
+  --tab-active-bg:          rgba(255, 255, 255, 0.12);
+  --tab-active-shadow:      0 1px 3px rgba(0, 0, 0, 0.3), 0 0.5px 0 rgba(255, 255, 255, 0.06) inset;
+  --input-bg:               rgba(255, 255, 255, 0.04);
+  --drop-border:            rgba(255, 255, 255, 0.15);
+  --btn-secondary-bg:       rgba(28, 28, 32, 0.9);
+  --btn-secondary-bg-hover: rgba(40, 40, 48, 0.95);
+  --btn-secondary-border:   rgba(255, 255, 255, 0.1);
+  --btn-secondary-border-hover: rgba(255, 255, 255, 0.18);
+  --progress-track:         rgba(255, 255, 255, 0.08);
+  --scrollbar-thumb:        rgba(255, 255, 255, 0.08);
+  --note-bg:                rgba(255, 255, 255, 0.04);
+  --note-border:            rgba(255, 255, 255, 0.07);
+  --placeholder-icon-bg:    rgba(255, 255, 255, 0.03);
+
+  /* ── Logo / header gradient stops ──────────────────────── */
+  --logo-start:         #ffffff;
+  --logo-mid:           #c8c2ff;
+  --header-logo-start:  rgba(255, 255, 255, 0.92);
+  --header-logo-end:    rgba(200, 195, 255, 0.75);
+  --header-divider:     rgba(255, 255, 255, 0.2);
+  --header-tagline:     rgba(255, 255, 255, 0.32);
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  --radius:     10px;
+  --radius-lg:  14px;
   --transition: 0.18s ease;
-  --panel-w: 340px;
+  --panel-w:    340px;
+
+  color-scheme: dark;
+}
+
+/* ── Light theme overrides ─────────────────────────────────── */
+[data-theme="light"] {
+  --bg-base:        #f0f0f5;
+  --bg-surface:     #ffffff;
+  --bg-elevated:    #f2f2f7;
+  --bg-fill:        rgba(118, 118, 128, 0.12);
+  --separator:      rgba(84, 84, 88, 0.36);
+  --border:         rgba(0, 0, 0, 0.1);
+  --text-primary:   rgba(0, 0, 0, 0.85);
+  --text-secondary: rgba(60, 60, 67, 0.6);
+  --text-muted:     rgba(60, 60, 67, 0.3);
+  --text-tertiary:  rgba(60, 60, 67, 0.28);
+
+  --panel-bg:               rgba(248, 248, 252, 0.88);
+  --panel-border:           rgba(0, 0, 0, 0.07);
+  --toggle-bg:              rgba(255, 255, 255, 0.92);
+  --toggle-bg-hover:        rgba(245, 245, 250, 0.98);
+  --toggle-border-hover:    rgba(0, 0, 0, 0.18);
+  --tab-active-bg:          rgba(255, 255, 255, 0.9);
+  --tab-active-shadow:      0 1px 3px rgba(0, 0, 0, 0.12), 0 0.5px 0 rgba(255, 255, 255, 0.8) inset;
+  --input-bg:               rgba(0, 0, 0, 0.04);
+  --drop-border:            rgba(0, 0, 0, 0.15);
+  --btn-secondary-bg:       rgba(255, 255, 255, 0.9);
+  --btn-secondary-bg-hover: rgba(245, 245, 250, 0.98);
+  --btn-secondary-border:   rgba(0, 0, 0, 0.1);
+  --btn-secondary-border-hover: rgba(0, 0, 0, 0.18);
+  --progress-track:         rgba(0, 0, 0, 0.08);
+  --scrollbar-thumb:        rgba(0, 0, 0, 0.15);
+  --note-bg:                rgba(0, 0, 0, 0.03);
+  --note-border:            rgba(0, 0, 0, 0.07);
+  --placeholder-icon-bg:    rgba(0, 0, 0, 0.04);
+
+  --logo-start:         rgba(20, 20, 40, 0.9);
+  --logo-mid:           #5d56c4;
+  --header-logo-start:  rgba(20, 20, 40, 0.85);
+  --header-logo-end:    rgba(90, 85, 180, 0.85);
+  --header-divider:     rgba(0, 0, 0, 0.25);
+  --header-tagline:     rgba(0, 0, 0, 0.45);
+
+  color-scheme: light;
 }
 
 html,
@@ -40,6 +116,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background var(--transition), color var(--transition);
 }
 
 /* ── Full-screen shell ─────────────────────────────────────── */
@@ -58,8 +135,6 @@ body {
   height: 100%;
 }
 
-/* Three.js canvas fills the viewer — no CSS grid needed */
-
 .model-viewer-el {
   position: relative;
   width: 100%;
@@ -67,10 +142,6 @@ body {
   background: transparent;
   --poster-color: transparent;
   z-index: 1;
-}
-
-/* model-viewer cursor override (shadow DOM injection handles canvas) */
-.model-viewer-el {
   cursor: default;
 }
 
@@ -92,8 +163,8 @@ body {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  background: var(--placeholder-icon-bg);
+  border: 0.5px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,10 +186,10 @@ body {
   left: 0;
   width: var(--panel-w);
   height: 100%;
-  background: rgba(10, 10, 14, 0.82);
+  background: var(--panel-bg);
   backdrop-filter: saturate(200%) blur(32px);
   -webkit-backdrop-filter: saturate(200%) blur(32px);
-  border-right: 0.5px solid rgba(255, 255, 255, 0.07);
+  border-right: 0.5px solid var(--panel-border);
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -126,15 +197,17 @@ body {
   flex-direction: column;
   z-index: 40;
   transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background var(--transition),
+              border-color var(--transition);
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 .floating-panel::-webkit-scrollbar { width: 3px; }
 .floating-panel::-webkit-scrollbar-track { background: transparent; }
 .floating-panel::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--scrollbar-thumb);
   border-radius: 2px;
 }
 
@@ -164,7 +237,7 @@ body {
   font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.5px;
-  background: linear-gradient(125deg, #fff 0%, #c8c2ff 60%, var(--accent) 100%);
+  background: linear-gradient(125deg, var(--logo-start) 0%, var(--logo-mid) 60%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -175,7 +248,7 @@ body {
   margin-top: 5px;
   font-size: 11px;
   font-weight: 400;
-  color: rgba(235, 235, 245, 0.22);
+  color: var(--text-tertiary);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -189,7 +262,7 @@ body {
   flex: 1;
 }
 
-/* ── Floating viewport header (pure text, no box) ─────────── */
+/* ── Floating viewport header ──────────────────────────────── */
 .floating-header {
   position: absolute;
   top: 22px;
@@ -207,7 +280,7 @@ body {
   font-size: 15px;
   font-weight: 700;
   letter-spacing: -0.3px;
-  background: linear-gradient(130deg, rgba(255,255,255,0.92) 0%, rgba(200,195,255,0.75) 100%);
+  background: linear-gradient(130deg, var(--header-logo-start) 0%, var(--header-logo-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -215,17 +288,17 @@ body {
 
 .app-divider {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.2);
+  color: var(--header-divider);
 }
 
 .app-tagline {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.32);
+  color: var(--header-tagline);
   font-weight: 400;
   letter-spacing: 0.01em;
 }
 
-/* ── Floating toggle button ────────────────────────────────── */
+/* ── Floating toggle button (panel) ───────────────────────── */
 .panel-toggle {
   position: absolute;
   top: 50%;
@@ -235,18 +308,20 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(14, 14, 18, 0.88);
+  background: var(--toggle-bg);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
-  color: rgba(235, 235, 245, 0.45);
+  border: 0.5px solid var(--border);
+  color: var(--text-secondary);
   font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), color var(--transition),
-    border-color var(--transition), background var(--transition);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color var(--transition),
+              border-color var(--transition),
+              background var(--transition);
   line-height: 1;
 }
 
@@ -256,8 +331,37 @@ body {
 
 .panel-toggle:hover {
   color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.18);
-  background: rgba(30, 30, 38, 0.95);
+  border-color: var(--toggle-border-hover);
+  background: var(--toggle-bg-hover);
+}
+
+/* ── Theme toggle button ───────────────────────────────────── */
+.theme-toggle-btn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 50;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--toggle-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 0.5px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  line-height: 1;
+}
+
+.theme-toggle-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--toggle-border-hover);
+  background: var(--toggle-bg-hover);
 }
 
 /* ── Floating download bar ─────────────────────────────────── */
@@ -299,9 +403,9 @@ body {
 }
 
 .tab-btn.active {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--tab-active-bg);
   color: var(--text-primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0.5px 0 rgba(255, 255, 255, 0.06) inset;
+  box-shadow: var(--tab-active-shadow);
 }
 
 .tab-btn:disabled {
@@ -328,8 +432,8 @@ body {
   width: 100%;
   min-height: 96px;
   padding: 11px 13px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  background: var(--input-bg);
+  border: 0.5px solid var(--border);
   border-radius: 12px;
   color: var(--text-primary);
   font-size: 14px;
@@ -354,7 +458,7 @@ body {
 
 /* ── Drag-drop upload zone ─────────────────────────────────── */
 .drop-zone {
-  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border: 1px dashed var(--drop-border);
   border-radius: var(--radius-lg);
   padding: 28px 16px;
   text-align: center;
@@ -452,18 +556,20 @@ body {
 }
 
 .btn-secondary {
-  background: rgba(28, 28, 32, 0.9);
+  background: var(--btn-secondary-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   color: var(--text-primary);
-  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border: 0.5px solid var(--btn-secondary-border);
   font-size: 13px;
   padding: 10px 16px;
+  transition: background var(--transition), border-color var(--transition),
+    color var(--transition), box-shadow 0.25s ease, transform 0.15s ease, opacity 0.15s ease;
 }
 
 .btn-secondary:hover {
-  background: rgba(40, 40, 48, 0.95);
-  border-color: rgba(255, 255, 255, 0.18);
+  background: var(--btn-secondary-bg-hover);
+  border-color: var(--btn-secondary-border-hover);
 }
 
 /* ── Progress bar ──────────────────────────────────────────── */
@@ -494,7 +600,7 @@ body {
 .progress-track {
   width: 100%;
   height: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--progress-track);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -551,8 +657,8 @@ body {
   color: var(--text-muted);
   line-height: 1.5;
   padding: 9px 12px;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--note-bg);
   border-radius: 8px;
-  border: 0.5px solid rgba(255, 255, 255, 0.07);
+  border: 0.5px solid var(--note-border);
   letter-spacing: 0.01em;
 }
