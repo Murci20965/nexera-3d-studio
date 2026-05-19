@@ -96,6 +96,39 @@ async def test_create_multiview_task_success():
     assert [f["file_token"] for f in body["files"]] == ["tok-0", "tok-1", "tok-2", "tok-3"]
 
 
+async def test_create_multiview_task_detailed_quality_in_payload():
+    captured = {}
+
+    def _record(request):
+        import json
+        captured["body"] = json.loads(request.content)
+        return httpx.Response(200, json={"data": {"task_id": "mv-detailed"}})
+
+    with respx.mock:
+        respx.post("https://api.tripo3d.ai/v2/openapi/task").mock(side_effect=_record)
+        from app.services.tripo import create_multiview_task
+        await create_multiview_task(_mv_payload(4), geometry_quality="detailed")
+
+    assert captured["body"]["geometry_quality"] == "detailed"
+
+
+async def test_create_multiview_task_standard_quality_omitted():
+    """'standard' is Tripo's default — we don't send the field to keep payloads minimal."""
+    captured = {}
+
+    def _record(request):
+        import json
+        captured["body"] = json.loads(request.content)
+        return httpx.Response(200, json={"data": {"task_id": "mv-standard"}})
+
+    with respx.mock:
+        respx.post("https://api.tripo3d.ai/v2/openapi/task").mock(side_effect=_record)
+        from app.services.tripo import create_multiview_task
+        await create_multiview_task(_mv_payload(4))  # default = standard
+
+    assert "geometry_quality" not in captured["body"]
+
+
 async def test_create_multiview_task_wrong_count():
     from app.services.tripo import create_multiview_task
     for n in (0, 1, 3, 5):

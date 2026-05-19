@@ -139,7 +139,33 @@ describe("useGeneration", () => {
     expect(formData.get("left")).toBe(files.left);
     expect(formData.get("right")).toBe(files.right);
     expect(formData.get("prompt")).toBe("a chair");
+    // Default quality is "standard" — should NOT appear in the FormData
+    expect(formData.get("quality")).toBeNull();
     expect(onModelReady).toHaveBeenCalled();
+  });
+
+  it("startMultiview with detailed quality forwards quality=detailed", async () => {
+    api.startMultiviewGeneration.mockResolvedValueOnce({ task_id: "mv-2" });
+    api.pollTask.mockResolvedValueOnce({
+      status: "success",
+      progress: 100,
+      model_url: "https://cdn.example.com/mv2.glb",
+    });
+
+    const { result } = renderHook(() => useGeneration({ onModelReady, onError }));
+    const files = {
+      front: new File([new Uint8Array(2)], "f.png", { type: "image/png" }),
+      back:  new File([new Uint8Array(2)], "b.png", { type: "image/png" }),
+      left:  new File([new Uint8Array(2)], "l.png", { type: "image/png" }),
+      right: new File([new Uint8Array(2)], "r.png", { type: "image/png" }),
+    };
+
+    act(() => { result.current.startMultiview(files, "", "detailed"); });
+    await act(async () => {});
+    await act(async () => { await vi.advanceTimersByTimeAsync(3000); });
+
+    const [formData] = api.startMultiviewGeneration.mock.calls[0];
+    expect(formData.get("quality")).toBe("detailed");
   });
 
   // ── startImage ──────────────────────────────────────────────────────────────

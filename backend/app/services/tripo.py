@@ -87,12 +87,16 @@ async def create_image_task(image_token: str, file_type: str = "png", prompt: st
 async def create_multiview_task(
     files: list[dict],
     prompt: str = "",
+    geometry_quality: str = "standard",
 ) -> str:
     """Create a multiview_to_model task.
 
     `files` is an ordered list of exactly 4 dicts, one per view in
     [front, back, left, right] order. Each dict must contain
     `file_token` (str) and `type` (str, e.g. 'png'/'jpg').
+
+    `geometry_quality` is "standard" (default) or "detailed" — detailed
+    produces a denser mesh at ~2x runtime and ~1.5x credits per task.
     """
     if len(files) != 4:
         raise HTTPException(
@@ -111,6 +115,10 @@ async def create_multiview_task(
     }
     if prompt:
         payload["prompt"] = prompt
+    # Only set when non-default to keep the payload minimal; Tripo's own
+    # default is "standard" so omitting matches the previous behaviour.
+    if geometry_quality == "detailed":
+        payload["geometry_quality"] = "detailed"
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(

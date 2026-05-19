@@ -132,6 +132,52 @@ def test_generate_multiview_success(client):
     tokens = [f["file_token"] for f in kwargs["files"]]
     assert tokens == ["t-front", "t-back", "t-left", "t-right"]
     assert kwargs["prompt"] == "a wooden chair"
+    # Default quality is standard when client omits the field
+    assert kwargs["geometry_quality"] == "standard"
+
+
+def test_generate_multiview_detailed_quality(client):
+    with (
+        patch(
+            "app.api.routes.generate.upload_image",
+            new=AsyncMock(side_effect=["t1", "t2", "t3", "t4"]),
+        ),
+        patch(
+            "app.api.routes.generate.create_multiview_task",
+            new=AsyncMock(return_value="task-mv-detailed"),
+        ) as create_mock,
+    ):
+        response = client.post(
+            "/api/generate/multiview",
+            files=_mv_files(),
+            data={"quality": "detailed"},
+        )
+
+    assert response.status_code == 200
+    create_mock.assert_awaited_once()
+    assert create_mock.await_args.kwargs["geometry_quality"] == "detailed"
+
+
+def test_generate_multiview_bogus_quality_falls_back(client):
+    """Anything other than 'standard'|'detailed' should be coerced to 'standard'."""
+    with (
+        patch(
+            "app.api.routes.generate.upload_image",
+            new=AsyncMock(side_effect=["t1", "t2", "t3", "t4"]),
+        ),
+        patch(
+            "app.api.routes.generate.create_multiview_task",
+            new=AsyncMock(return_value="task-mv"),
+        ) as create_mock,
+    ):
+        response = client.post(
+            "/api/generate/multiview",
+            files=_mv_files(),
+            data={"quality": "ultra-max-9000"},
+        )
+
+    assert response.status_code == 200
+    assert create_mock.await_args.kwargs["geometry_quality"] == "standard"
 
 
 # ── Task polling ─────────────────────────────────────────────────────────────

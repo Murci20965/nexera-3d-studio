@@ -80,7 +80,7 @@ export function useGeneration({ onModelReady, onError }) {
     }
   };
 
-  const startMultiview = async (files, prompt) => {
+  const startMultiview = async (files, prompt, quality = "standard") => {
     // `files` is { front, back, left, right } — all four required
     clearInterval(pollRef.current);
     setIsLoading(true); setProgress(0); setStatusMsg("Uploading images…"); onError("");
@@ -91,6 +91,8 @@ export function useGeneration({ onModelReady, onError }) {
       formData.append("left",  files.left);
       formData.append("right", files.right);
       if (prompt && prompt.trim()) formData.append("prompt", prompt.trim());
+      // Only send quality when non-default to keep the request minimal.
+      if (quality === "detailed") formData.append("quality", "detailed");
       const { task_id } = await startMultiviewGeneration(formData);
       setStatusMsg("Generating…"); setProgress(0);
       const modelUrl = await poll(task_id, "Generating");

@@ -90,6 +90,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
   const [mvFiles, setMvFiles] = useState({ front: null, back: null, left: null, right: null });
   const [mvPreviews, setMvPreviews] = useState({ front: null, back: null, left: null, right: null });
   const [mvPrompt, setMvPrompt] = useState("");
+  const [mvQuality, setMvQuality] = useState("standard"); // "standard" | "detailed"
 
   const fileInputRef = useRef(null);
 
@@ -112,7 +113,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
   const handleMvSubmit = (e) => {
     e.preventDefault();
     if (!VIEWS.every((v) => mvFiles[v]) || isLoading) return;
-    startMultiview(mvFiles, mvPrompt);
+    startMultiview(mvFiles, mvPrompt, mvQuality);
   };
 
   const handleTabChange = (tab) => {
@@ -323,6 +324,25 @@ export default function GeneratorForm({ onModelReady, onError }) {
               Same scale, same lighting, clean backgrounds.
               Reflective subjects (cars, glass, chrome) often produce warped meshes — the single-image <strong>Image to 3D</strong> tab usually works better for those.
             </p>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Quality</label>
+            <div className="tabs" style={{ padding: "3px" }}>
+              <button type="button"
+                className={`tab-btn${mvQuality === "standard" ? " active" : ""}`}
+                onClick={() => setMvQuality("standard")} disabled={isLoading}
+              >Standard</button>
+              <button type="button"
+                className={`tab-btn${mvQuality === "detailed" ? " active" : ""}`}
+                onClick={() => setMvQuality("detailed")} disabled={isLoading}
+              >Detailed</button>
+            </div>
+            {mvQuality === "detailed" && (
+              <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "6px" }}>
+                Denser mesh — roughly 2× generation time and 1.5× credits.
+              </p>
+            )}
           </div>
 
           <div className="form-group">

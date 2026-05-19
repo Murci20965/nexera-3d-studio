@@ -69,6 +69,7 @@ async def generate_from_multiview(
     left: UploadFile = File(...),
     right: UploadFile = File(...),
     prompt: str = Form(default=""),
+    quality: str = Form(default="standard"),
 ):
     """Multiview generation: requires exactly 4 images in front/back/left/right order."""
     uploads = [("front", front), ("back", back), ("left", left), ("right", right)]
@@ -100,7 +101,11 @@ async def generate_from_multiview(
         )
         tokens.append({"file_token": token, "type": ext})
 
-    task_id = await create_multiview_task(files=tokens, prompt=prompt.strip())
+    task_id = await create_multiview_task(
+        files=tokens,
+        prompt=prompt.strip(),
+        geometry_quality=quality if quality in ("standard", "detailed") else "standard",
+    )
     return TaskIdResponse(task_id=task_id)
 
 
