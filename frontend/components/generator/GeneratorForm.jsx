@@ -205,7 +205,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
             </div>
             {quality === "high-detail" && !lowPoly && (
               <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "6px" }}>
-                Auto-retopology — clean quad meshes for rigging.
+                Auto-retopology for clean quad meshes.
               </p>
             )}
           </div>
@@ -219,7 +219,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
               />
               <span className="toggle-label">Low-Poly mode</span>
               <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                — fewer faces, flat-shaded
+                (fewer faces, flat-shaded)
               </span>
             </label>
           </div>
@@ -339,8 +339,21 @@ export default function GeneratorForm({ onModelReady, onError }) {
               ))}
             </div>
             <p className="image-prompt-note">
-              Each view must be a <strong>direct head-on shot</strong> — not a 3/4 angle. Reflective subjects (cars, glass) often warp; try Image to 3D for those.
+              Each view must be a <strong>direct head-on shot</strong>, not a 3/4 angle. Reflective subjects (cars, glass) often warp; try Image to 3D for those.
             </p>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="mv-prompt">
+              Additional prompt{" "}
+              <span style={{ textTransform: "none", fontWeight: 400 }}>(optional)</span>
+            </label>
+            <textarea
+              id="mv-prompt" className="form-textarea"
+              placeholder="Add context or style hints…"
+              value={mvPrompt} onChange={(e) => setMvPrompt(e.target.value)}
+              disabled={isLoading} style={{ minHeight: "72px" }}
+            />
           </div>
 
           <div className="form-group">
@@ -360,19 +373,6 @@ export default function GeneratorForm({ onModelReady, onError }) {
                 ~2× time, ~1.5× credits.
               </p>
             )}
-          </div>
-
-          <div className="form-group">
-            <label className="form-label" htmlFor="mv-prompt">
-              Additional prompt{" "}
-              <span style={{ textTransform: "none", fontWeight: 400 }}>(optional)</span>
-            </label>
-            <textarea
-              id="mv-prompt" className="form-textarea"
-              placeholder="Add context or style hints…"
-              value={mvPrompt} onChange={(e) => setMvPrompt(e.target.value)}
-              disabled={isLoading} style={{ minHeight: "72px" }}
-            />
           </div>
 
           <button type="submit" className="btn btn-primary"
