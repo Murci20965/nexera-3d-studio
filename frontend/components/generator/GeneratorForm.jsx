@@ -205,7 +205,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
             </div>
             {quality === "high-detail" && !lowPoly && (
               <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "6px" }}>
-                Enables auto-retopology for clean quad meshes — best for rigging & animation.
+                Auto-retopology — clean quad meshes for rigging.
               </p>
             )}
           </div>
@@ -290,7 +290,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
               disabled={isLoading} style={{ minHeight: "72px" }}
             />
             <p className="image-prompt-note">
-              The uploaded image sets the base color and texture. Prompts influence shape and style but cannot override the image&rsquo;s colors. For full color control, use Text to 3D.
+              Image sets colour and texture; prompts only adjust shape.
             </p>
           </div>
 
@@ -308,7 +308,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
             </div>
             {imageQuality === "detailed" && (
               <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "6px" }}>
-                Denser mesh — roughly 2× generation time and 1.5× credits.
+                ~2× time, ~1.5× credits.
               </p>
             )}
           </div>
@@ -339,10 +339,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
               ))}
             </div>
             <p className="image-prompt-note">
-              All 4 views must be <strong>direct head-on shots</strong> of the same object — <em>not</em> 3/4-angle marketing photos.
-              Front and Back show only the front/rear face; Left and Right are pure side profiles.
-              Same scale, same lighting, clean backgrounds.
-              Reflective subjects (cars, glass, chrome) often produce warped meshes — the single-image <strong>Image to 3D</strong> tab usually works better for those.
+              Each view must be a <strong>direct head-on shot</strong> — not a 3/4 angle. Reflective subjects (cars, glass) often warp; try Image to 3D for those.
             </p>
           </div>
 
@@ -360,7 +357,7 @@ export default function GeneratorForm({ onModelReady, onError }) {
             </div>
             {mvQuality === "detailed" && (
               <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "6px" }}>
-                Denser mesh — roughly 2× generation time and 1.5× credits.
+                ~2× time, ~1.5× credits.
               </p>
             )}
           </div>
